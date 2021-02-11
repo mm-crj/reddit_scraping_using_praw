@@ -5,12 +5,24 @@
 import praw
 import pandas as pd
 
+# Read data from data.info
+
+file = open('data.info', 'r')
+Lines = file.readlines()
+count = 0
+cred = [[] for _ in range(2)]
+# Strips the newline character
+for line in Lines:
+    cred[count]=line.strip()
+    count += 1
+    #cred.append(line.format(count, line.strip()))
+print(cred)
 
 # Acessing the reddit api
 
 
-reddit = praw.Reddit(client_id="",#my client id
-                     client_secret="",  #your client secret
+reddit = praw.Reddit(client_id=cred[0],#my client id
+                     client_secret=cred[1],  #your client secret
                      user_agent="my user agent", #user agent name
                      username = "",     # your reddit username
                      password = "")     # your reddit password
@@ -26,7 +38,7 @@ for s in sub:
 ########################################
 
 #   NOTE: ALL THE POST DATA AND COMMENT DATA WILL BE SAVED IN TWO DIFFERENT
-#   DATASETS AND LATER CAN BE MAPPED USING IDS OF POSTS/COMMENTS AS WE WILL 
+#   DATASETS AND LATER CAN BE MAPPED USING IDS OF POSTS/COMMENTS AS WE WILL
 #   BE CAPTURING ALL IDS THAT COME IN OUR WAY
 
 # SCRAPING CAN BE DONE VIA VARIOUS STRATEGIES {HOT,TOP,etc} we will go with keyword strategy i.e using search a keyword
@@ -56,7 +68,7 @@ for s in sub:
             post_dict["comms_num"].append(submission.title)
             post_dict["created"].append(submission.title)
             post_dict["body"].append(submission.title)
-            
+
             ##### Acessing comments on the post
             submission.comments.replace_more(limit = 1)
             for comment in submission.comments.list():
@@ -64,10 +76,9 @@ for s in sub:
                 comments_dict["comment_parent_id"].append(comment.parent_id)
                 comments_dict["comment_body"].append(comment.body)
                 comments_dict["comment_link_id"].append(comment.link_id)
-        
+
         post_comments = pd.DataFrame(comments_dict)
 
         post_comments.to_csv(s+"_comments_"+ item +"subreddit.csv")
         post_data = pd.DataFrame(post_dict)
         post_data.to_csv(s+"_"+ item +"subreddit.csv")
-
