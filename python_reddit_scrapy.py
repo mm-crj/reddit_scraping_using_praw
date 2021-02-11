@@ -23,7 +23,7 @@ print(cred)
 
 reddit = praw.Reddit(client_id=cred[0],#my client id
                      client_secret=cred[1],  #your client secret
-                     user_agent="my user agent", #user agent name
+                     user_agent="crypto-bot", #user agent name
                      username = "",     # your reddit username
                      password = "")     # your reddit password
 
